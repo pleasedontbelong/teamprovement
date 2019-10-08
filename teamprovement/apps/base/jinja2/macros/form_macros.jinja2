@@ -1,0 +1,47 @@
+{% macro input(field, label=None) %}
+  <div class="form-group{% if field.errors %} has-error has-feedback{% endif %}">
+    <label class="control-label">{{ label if label else field.label }}</label>
+    {% autoescape False %}
+      {% set classname = "form-control" + (' is-invalid' if field.errors else '') %}
+      {% if not field.field.widget.check_test %}
+        {{ field|add_classname(classname)|safe }}
+      {% else %}
+        {{ field|safe }}
+      {% endif %}
+    {% endautoescape %}
+    <div class="invalid-feedback">
+      {{ field.errors|safe }}
+    </div>
+  </div>
+{% endmacro %}
+
+
+{% macro raw_input(field, label=None) %}
+  <div class="form-group{% if field.errors %} has-error has-feedback{% endif %}">
+    <label class="sr-only">{{ label if label else field.label }}</label>
+    {% autoescape False %}
+      {% set classname = "form-control" + (' is-invalid' if field.errors else '') %}
+      {{ field|add_placeholder(label or field.label)|add_classname(classname)|safe }}
+    {% endautoescape %}
+    <div class="invalid-feedback">
+      {{ field.errors|safe }}
+    </div>
+  </div>
+{% endmacro %}
+
+
+{% macro submit(value, extra_class="") %}
+  <button type="submit" class="btn btn-success {{ extra_class }}">
+    {{ value }}
+  </button>
+  {% csrf_token %}
+{% endmacro %}
+
+
+{% macro non_field_errors(form) %}
+  {% for error in form.non_field_errors() %}
+    <div class="alert alert-danger" role="alert">
+      {{ error }}
+    </div>
+  {% endfor %}
+{% endmacro %}
