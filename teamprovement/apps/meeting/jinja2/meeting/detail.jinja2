@@ -1,0 +1,8 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Meeting: {{ meeting.name }}{% endblock %}
+
+{% block content %}
+  <a href="{{ url('meeting_list') }}"> &leftarrow;&nbsp;Back to list</a>
+
+{% endblock %}

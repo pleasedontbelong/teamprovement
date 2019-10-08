@@ -37,11 +37,12 @@
 
     <main role="main">
       <div class="container">
-      {% block content %}{% endblock %}
+          <h1>{% block title %}Main title goes here{% endblock %}</h1>
+          {% block content %}{% endblock %}
       </div>
     </main>
 
-    <footer class="text-muted">
+    <footer class="text-muted mt-4">
       <div class="container">
         <p class="float-right">
           <a href="#">Back to top</a>
