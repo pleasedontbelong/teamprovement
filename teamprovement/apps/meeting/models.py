@@ -7,6 +7,7 @@ from teamprovement.apps.meeting import constants
 class Meeting(models.Model):
     name = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
+    status = models.PositiveSmallIntegerField(choices=constants.MEETING_STATUS_CHOICES)
 
 
 class User(AbstractBaseUser):

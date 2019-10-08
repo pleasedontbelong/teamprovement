@@ -5,3 +5,8 @@ MOOD_CHOICES = Choices(
     ('NEUTRAL', 1, 'Neutral'),
     ('BAD', 0, 'Bad')
 )
+
+MEETING_STATUS_CHOICES = Choices(
+    ('OPENED', 0, 'Opened'),
+    ('CLOSED', 1, 'Closed')
+)
