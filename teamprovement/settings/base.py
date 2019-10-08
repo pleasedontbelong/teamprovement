@@ -103,6 +103,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'meeting.User'
+AUTHENTICATION_BACKENDS = (
+    'base.auth_backends.SimpleAuthBackend',
+)
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = '/meetings'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2.6/topics/i18n/

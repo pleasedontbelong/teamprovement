@@ -3,12 +3,42 @@
 {% block title %}Meetings{% endblock %}
 
 {% block content %}
-    {% for meeting in meetings %}
-      <div class="card mt-4">
-        <div class="card-body">
-          <p><a href="{{ url('meeting_detail', meeting.id) }}">{{ meeting.name }}</a></p>
-          <em>created at {{ meeting.created_at }}</em>
-         </div>
+  <a href="{{ url("meeting_create") }}" class="btn btn-primary">New Meeting</a>
+
+  {% for meeting in meetings %}
+    <div class="card mt-4 {% if meeting.is_opened %}border-success{% endif %}">
+      <div class="card-body">
+        <div class="btn-group float-right" role="group" aria-label="Basic example">
+          {% if not meeting.is_participant(user) %}             
+            <a href="" class="btn btn-success">
+              <i class="fa fa-user-plus"></i> Join
+            </a>
+          {% endif %}
+          <a href="{{ url('meeting_update', meeting.id) }}" class="btn btn-info">
+            <i class="fa fa-pencil-alt"></i>
+          </a>
+          <a href="{{ url('meeting_delete', meeting.id) }}" class="btn btn-danger">
+            <i class="fa fa-trash-alt"></i>
+          </a>
+        </div>
+        <p class="{% if not meeting.is_opened %}text-secondary{% endif %}">
+          <a href="{{ url('meeting_detail', meeting.id) }}"
+             class="{% if not meeting.is_opened %}text-secondary{% endif %}">
+            {{ meeting.name }}
+          </a>
+        </p>
       </div>
-    {% endfor %}
+
+      <div class="card-footer text-muted">
+        <em>
+          {% if meeting.is_opened %}
+            <span class="badge badge-success">Opened</span>
+          {% else %}
+            <span class="badge badge-secondary">Closed</span>  
+          {% endif %}
+          created at {{ meeting.created_at.strftime('%Y-%m-%d %H:%M') }}
+        </em>
+      </div>
+    </div>
+  {% endfor %}
 {% endblock %}

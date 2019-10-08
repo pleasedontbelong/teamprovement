@@ -16,17 +16,19 @@ STATICFILES_DIRS = (
 )
 
 PIPELINE = {
-    # 'JAVASCRIPT': {
-    #     'main': {
-    #         'source_filenames': (
-
-    #         ),
-    #         'output_filename': 'js/script.js',
-    #     }
-    # },
+    'JAVASCRIPT': {
+        'main': {
+            'source_filenames': (
+                'jquery/dist/jquery.min.js',
+                'bootstrap/dist/js/bootstrap.bundle.min.js'
+            ),
+            'output_filename': 'js/script.js',
+        }
+    },
     'STYLESHEETS': {
         'main': {
             'source_filenames': (
+                '@fortawesome/fontawesome-free/css/all.min.css',
                 'bootstrap/dist/css/bootstrap.min.css',
             ),
             'output_filename': 'css/main.css',

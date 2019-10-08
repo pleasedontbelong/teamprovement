@@ -1,9 +1,13 @@
 from django.conf.urls import url
 from django.urls import path
 
-from .views import MeetingListView, MeetingDetailView
+from .views import (MeetingListView, MeetingDetailView, MeetingCreateView,
+                    MeetingDeleteView, MeetingUpdateView)
 
 urlpatterns = [
     url(r'^$', MeetingListView.as_view(), name='meeting_list'),
     path('<int:pk>', MeetingDetailView.as_view(), name='meeting_detail'),
+    path('add', MeetingCreateView.as_view(), name='meeting_create'),
+    path('delete/<int:pk>', MeetingDeleteView.as_view(), name='meeting_delete'),
+    path('update/<int:pk>', MeetingUpdateView.as_view(), name='meeting_update'),
 ]

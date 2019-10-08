@@ -1,0 +1,16 @@
+{% extends "base.jinja2" %}
+{% import 'macros/form_macros.jinja2' as form_macros with context %}
+
+{% block content %}
+  <form method="post">
+    <h1 class="mb-3 font-weight-normal">{{ _("Please sign in") }}</h1>
+    {% if form.errors.__all__ %}
+      <div class="alert alert-danger">
+        {{ form.errors.__all__ }}
+      </div>    
+    {% endif %}
+    {% csrf_token %}
+    {{ form_macros.input(form.username) }}
+    {{ form_macros.submit(_("Sign in"), "btn-lg btn-block") }}
+  </form>
+{% endblock %}
