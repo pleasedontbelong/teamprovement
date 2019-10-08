@@ -1,5 +1,14 @@
 {% extends "base.jinja2" %}
 
+{% block title %}Meetings{% endblock %}
+
 {% block content %}
-<h1>It Works!</h1>
+    {% for meeting in meetings %}
+      <div class="card mt-4">
+        <div class="card-body">
+          <p><a href="{{ url('meeting_detail', meeting.id) }}">{{ meeting.name }}</a></p>
+          <em>created at {{ meeting.created_at }}</em>
+         </div>
+      </div>
+    {% endfor %}
 {% endblock %}
