@@ -1,0 +1,19 @@
+{
+  "name": "teamprovement",
+  "version": "1.0.0",
+  "description": "Meetin manager",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "node django-assets.js"
+  },
+  "author": "Pablo Leano",
+  "license": "ISC",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.4.2",
+    "bootstrap": "^4.1.3",
+    "jquery": "^3.3.1"
+  },
+  "devDependencies": {
+    "cpx": "^1.5.0"
+  }
+}

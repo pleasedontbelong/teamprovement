@@ -91,3 +91,5 @@ settings/local.py
 .env
 db.sqlite3
 /static/
+/assets/
+/node_modules/

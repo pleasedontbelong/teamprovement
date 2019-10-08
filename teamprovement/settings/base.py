@@ -27,6 +27,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = []
 
+STATIC_ROOT = join(ROOT, '..', 'static')
 
 # Application definition
 
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'base',
+    'meeting'
 ]
 
 MIDDLEWARE = [
