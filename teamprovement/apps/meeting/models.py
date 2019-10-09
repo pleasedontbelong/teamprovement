@@ -63,6 +63,9 @@ class Topic(models.Model):
         related_name="topics"
     )
 
+    def created_by(self, user):
+        return self.creator.user == user
+
 
 class Comment(models.Model):
     author = models.ForeignKey(Participant, on_delete=models.CASCADE)
