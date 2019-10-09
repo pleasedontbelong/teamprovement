@@ -3,5 +3,27 @@
 {% block title %}Meeting: {{ meeting.name }}{% endblock %}
 
 {% block content %}
-  <a href="{{ url('meeting_list') }}"> &leftarrow;&nbsp;Back to list</a>
+  <a href="{{ url("topic_create", meeting_id=meeting.id) }}" class="btn btn-primary">New Topic</a>
+  <a href="{{ url('meeting_list') }}" class="float-right">&leftarrow;&nbsp;Back to meetings list</a>
+
+    {% for topic in meeting.topics.all() %}
+      <div class="card mt-4 border-{{ topic.mood | mood_class }}">
+        <div class="card-header text-white bg-{{ topic.mood | mood_class }}">
+            {{ topic.mood | mood_emoji }}
+          <em class="float-right">{{ topic.creator }}</em>
+        </div>
+        <div class="card-body">
+          <p class="card-text">
+            <span>Fact:&nbsp;</span>
+            <span class="text-{{ topic.mood | mood_class }}">{{ topic.fact }}</span>
+          </p>
+          <hr>
+          <p class="card-text">
+            <span>Feeling:&nbsp;</span>
+            <span>{{ topic.feeling }}</span>
+          </p>
+        </div>
+        <div class="card-footer">votes placeholder</div>
+      </div>
+    {% endfor %}
 {% endblock %}
