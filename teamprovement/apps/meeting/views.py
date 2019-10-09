@@ -56,7 +56,25 @@ class MeetingUpdateView(MeetingCRUD, UpdateView):
 
 class TopicCreateView(TopicCRUD, CreateView):
     template_name = "topic/create.jinja2"
-    model = Topic
+    form_class = TopicForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['meeting'] = self.meeting
+        return context
+
+    def get_success_url(self):
+        return reverse('meeting_detail', args=[self.meeting.id])
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs['creator'] = self.meeting.participants.get(user=self.request.user)
+        form_kwargs['meeting'] = self.meeting
+        return form_kwargs
+
+
+class TopicUpdateView(TopicCRUD, UpdateView):
+    template_name = "topic/update.jinja2"
     form_class = TopicForm
 
     def get_context_data(self, **kwargs):

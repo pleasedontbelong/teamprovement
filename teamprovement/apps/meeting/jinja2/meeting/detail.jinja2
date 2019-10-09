@@ -23,7 +23,15 @@
             <span>{{ topic.feeling }}</span>
           </p>
         </div>
-        <div class="card-footer">votes placeholder</div>
+        <div class="card-footer">
+          <div class="btn-group float-right" role="group" aria-label="Basic example">
+              {% if topic.created_by(user) %}
+                <a href="{{ url('topic_update', meeting.id, topic.id) }}" class="btn btn-sm btn-info">
+                  <i class="fa fa-pencil-alt"></i>
+                </a>
+              {% endif %}
+          </div>
+        </div>
       </div>
     {% endfor %}
 {% endblock %}
