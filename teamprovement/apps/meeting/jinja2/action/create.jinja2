@@ -1,0 +1,33 @@
+{% extends "base.jinja2" %}
+{% import 'macros/form_macros.jinja2' as form_macros with context %}
+
+{% block title %}Create Action{% endblock %}
+
+{% block content %}
+  <div class="card mt-4 border-{{ topic.mood | mood_class }}">
+    <div class="card-header text-white bg-{{ topic.mood | mood_class }}">
+        {{ topic.mood | mood_emoji }}
+      <em class="float-right">{{ topic.creator }}</em>
+    </div>
+    <div class="card-body">
+      <p class="card-text">
+        <span>Fact:&nbsp;</span>
+        <span class="text-{{ topic.mood | mood_class }}">{{ topic.fact }}</span>
+      </p>
+      <hr>
+      <p class="card-text">
+        <span>Feeling:&nbsp;</span>
+        <span>{{ topic.feeling }}</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="my-3 p-3 bg-white rounded box-shadow">
+    <form action="" method="post">
+      {{ form_macros.input(form.goal) }}
+      {{ form_macros.input(form.body) }}
+      {{ form_macros.input(form.owner) }}
+      {{ form_macros.submit(_("Create")) }}
+    </form>
+  </div>
+{% endblock %}
