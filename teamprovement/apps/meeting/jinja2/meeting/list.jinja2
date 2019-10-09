@@ -10,7 +10,7 @@
       <div class="card-body">
         <div class="btn-group float-right" role="group" aria-label="Basic example">
           {% if not meeting.is_participant(user) %}             
-            <a href="" class="btn btn-success">
+            <a href="{{ url('meeting_join', meeting.id) }}" class="btn btn-success">
               <i class="fa fa-user-plus"></i> Join
             </a>
           {% endif %}

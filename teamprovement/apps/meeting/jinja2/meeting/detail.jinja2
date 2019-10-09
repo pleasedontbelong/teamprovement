@@ -3,7 +3,11 @@
 {% block title %}Meeting: {{ meeting.name }}{% endblock %}
 
 {% block content %}
-  <a href="{{ url("topic_create", meeting_id=meeting.id) }}" class="btn btn-primary">New Topic</a>
+  {% if meeting.is_participant(user) %}
+    <a href="{{ url("topic_create", meeting_id=meeting.id) }}" class="btn btn-primary">New Topic</a>
+  {% else %}
+    <em>Only participants can create topics for this meeting</em>  
+  {% endif %}
   <a href="{{ url('meeting_list') }}" class="float-right">&leftarrow;&nbsp;Back to meetings list</a>
 
     {% for topic in meeting.topics.all() %}
