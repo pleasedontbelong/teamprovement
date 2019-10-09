@@ -39,6 +39,9 @@ class Participant(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     votes = models.ManyToManyField('Topic', through='Vote')
 
+    def __str__(self):
+        return self.user.username
+
 
 class Action(models.Model):
     goal = models.CharField(max_length=255)
@@ -54,7 +57,11 @@ class Topic(models.Model):
     feeling = models.TextField()
     creator = models.ForeignKey(Participant, on_delete=models.CASCADE)
     action = models.ForeignKey(Action, on_delete=models.CASCADE, blank=True, null=True)
-    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE)
+    meeting = models.ForeignKey(
+        Meeting,
+        on_delete=models.CASCADE,
+        related_name="topics"
+    )
 
 
 class Comment(models.Model):
