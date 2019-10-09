@@ -22,3 +22,21 @@ def shuffle(items):
     items = list(items)
     random.shuffle(items)
     return items
+
+
+@library.filter
+def mood_class(mood):
+    return {
+        0: 'danger',
+        1: 'warning',
+        2: 'success'
+    }[mood]
+
+
+@library.filter
+def mood_emoji(mood):
+    return {
+        0: 'Bad 😞',
+        1: 'Neutral 😔',
+        2: 'Good 😃'
+    }[mood]

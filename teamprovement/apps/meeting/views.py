@@ -1,12 +1,23 @@
 from braces.views import LoginRequiredMixin
+from django.shortcuts import get_object_or_404
 from django.views.generic import (ListView, DetailView, CreateView, DeleteView,
                                   UpdateView)
-from django.urls import reverse_lazy
-from .models import Meeting
+from django.urls import reverse_lazy, reverse
+
+from teamprovement.apps.meeting.forms import TopicForm
+from .models import Meeting, Topic
 
 
 class MeetingCRUD(LoginRequiredMixin):
     model = Meeting
+
+
+class TopicCRUD(LoginRequiredMixin):
+    model = Topic
+
+    def dispatch(self, request, *args, **kwargs):
+        self.meeting = Meeting.objects.get(pk=kwargs['meeting_id'])
+        return super().dispatch(request, *args, **kwargs)
 
 
 class MeetingListView(MeetingCRUD, ListView):
@@ -41,3 +52,23 @@ class MeetingUpdateView(MeetingCRUD, UpdateView):
     success_url = reverse_lazy('meeting_list')
     fields = ('name', 'status')
     context_object_name = "meeting"
+
+
+class TopicCreateView(TopicCRUD, CreateView):
+    template_name = "topic/create.jinja2"
+    model = Topic
+    form_class = TopicForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['meeting'] = self.meeting
+        return context
+
+    def get_success_url(self):
+        return reverse('meeting_detail', args=[self.meeting.id])
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs['creator'] = self.meeting.participants.get(user=self.request.user)
+        form_kwargs['meeting'] = self.meeting
+        return form_kwargs

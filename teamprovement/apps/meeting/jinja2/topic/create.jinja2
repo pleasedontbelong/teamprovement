@@ -1,0 +1,15 @@
+{% extends "base.jinja2" %}
+{% import 'macros/form_macros.jinja2' as form_macros with context %}
+
+{% block title %}Create Topic on {{ meeting }}{% endblock %}
+
+{% block content %}
+  <div class="my-3 p-3 bg-white rounded box-shadow">
+    <form action="" method="post">
+      {{ form_macros.input(form.mood) }}
+      {{ form_macros.input(form.fact) }}
+      {{ form_macros.input(form.feeling) }}
+      {{ form_macros.submit(_("Create")) }}
+    </form>
+  </div>
+{% endblock %}
