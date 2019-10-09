@@ -1,5 +1,6 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
+from collections import defaultdict
 
 from meeting.constants import MEETING_STATUS_CHOICES, MOOD_CHOICES
 
@@ -25,6 +26,17 @@ class Meeting(models.Model):
     def is_opened(self):
         return self.status == MEETING_STATUS_CHOICES.OPENED
 
+    @property
+    def topics_stats(self):
+        groups = defaultdict(list)
+        for topic in self.topics.all():
+            groups[topic.mood].append(topic)
+        return groups
+
+    @property
+    def has_actions(self):
+        return self.actions.exists()
+
 
 class User(AbstractBaseUser):
     username = models.CharField(max_length=50, unique=True)
@@ -46,9 +58,9 @@ class Participant(models.Model):
 class Action(models.Model):
     goal = models.CharField(max_length=255)
     body = models.TextField()
-    was_successful = models.BooleanField()
-    owner = models.ForeignKey(Participant, on_delete=models.CASCADE)
-    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE)
+    was_successful = models.BooleanField(blank=True, null=True)
+    owner = models.ForeignKey(Participant, on_delete=models.CASCADE, blank=True, null=True)
+    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE, related_name="actions")
 
 
 class Topic(models.Model):

@@ -4,8 +4,8 @@ from django.views.generic import (ListView, DetailView, CreateView, DeleteView,
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 
-from teamprovement.apps.meeting.forms import TopicForm
-from .models import Meeting, Topic
+from .forms import TopicForm, ActionCreateForm, ActionUpdateForm
+from .models import Meeting, Topic, Action
 
 
 class MeetingCRUD(LoginRequiredMixin):
@@ -14,6 +14,14 @@ class MeetingCRUD(LoginRequiredMixin):
 
 class TopicCRUD(LoginRequiredMixin):
     model = Topic
+
+    def dispatch(self, request, *args, **kwargs):
+        self.meeting = Meeting.objects.get(pk=kwargs['meeting_id'])
+        return super().dispatch(request, *args, **kwargs)
+
+
+class ActionCRUD(LoginRequiredMixin):
+    model = Action
 
     def dispatch(self, request, *args, **kwargs):
         self.meeting = Meeting.objects.get(pk=kwargs['meeting_id'])
@@ -99,5 +107,52 @@ class TopicUpdateView(TopicCRUD, UpdateView):
     def get_form_kwargs(self):
         form_kwargs = super().get_form_kwargs()
         form_kwargs['creator'] = self.meeting.participants.get(user=self.request.user)
+        form_kwargs['meeting'] = self.meeting
+        return form_kwargs
+
+
+class ActionCreateView(ActionCRUD, CreateView):
+    model = Action
+    template_name = "action/create.jinja2"
+    form_class = ActionCreateForm
+
+    def dispatch(self, request, *args, **kwargs):
+        self.topic = Topic.objects.get(
+            pk=kwargs['topic_id']
+        )
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['meeting'] = self.meeting
+        context['topic'] = self.topic
+        return context
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs['topic'] = self.topic
+        form_kwargs['meeting'] = self.meeting
+        return form_kwargs
+
+    def get_success_url(self):
+        return reverse('meeting_detail', args=[self.meeting.id])
+
+
+class ActionUpdateView(ActionCRUD, UpdateView):
+    model = Action
+    template_name = "action/update.jinja2"
+    form_class = ActionUpdateForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['topics'] = Topic.objects.filter(action=self.object)
+        return context
+
+    def get_success_url(self):
+        return reverse('meeting_detail', args=[self.object.meeting.id])
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs['topic'] = None
         form_kwargs['meeting'] = self.meeting
         return form_kwargs

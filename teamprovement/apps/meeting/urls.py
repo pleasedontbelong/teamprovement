@@ -12,4 +12,14 @@ urlpatterns = [
     path('update/<int:pk>', views.MeetingUpdateView.as_view(), name='meeting_update'),
     path('<int:meeting_id>/topic/add', views.TopicCreateView.as_view(), name='topic_create'),
     path('<int:meeting_id>/topic/<int:pk>/update', views.TopicUpdateView.as_view(), name='topic_update'),
+    path(
+        '<int:meeting_id>/topic/<int:topic_id>/action/add',
+        views.ActionCreateView.as_view(),
+        name='action_create'
+    ),
+    path(
+        '<int:meeting_id>/action/<int:pk>/update',
+        views.ActionUpdateView.as_view(),
+        name='action_update'
+    ),
 ]

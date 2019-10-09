@@ -3,12 +3,13 @@
 {% block title %}Meetings{% endblock %}
 
 {% block content %}
+
   <a href="{{ url("meeting_create") }}" class="btn btn-primary">New Meeting</a>
 
   {% for meeting in meetings %}
     <div class="card mt-4 {% if meeting.is_opened %}border-success{% endif %}">
       <div class="card-body">
-        <div class="btn-group float-right" role="group" aria-label="Basic example">
+        <div class="btn-group float-right" role="group">
           {% if not meeting.is_participant(user) %}             
             <a href="{{ url('meeting_join', meeting.id) }}" class="btn btn-success">
               <i class="fa fa-user-plus"></i> Join
@@ -21,12 +22,46 @@
             <i class="fa fa-trash-alt"></i>
           </a>
         </div>
-        <p class="{% if not meeting.is_opened %}text-secondary{% endif %}">
+        <h5 class="{% if not meeting.is_opened %}text-secondary{% endif %}">
           <a href="{{ url('meeting_detail', meeting.id) }}"
              class="{% if not meeting.is_opened %}text-secondary{% endif %}">
             {{ meeting.name }}
           </a>
-        </p>
+        </h5>
+        <ul class="list-group">
+          <li class="list-group-item">
+            <strong>Participants:</strong> {{ meeting.participants.all()|join(', ') }}
+          </li>
+          <li class="list-group-item">
+            <strong>Topics:</strong>
+            {% for mood, topics in meeting.topics_stats.items() %}
+              {{ topics|length }} {{ mood | mood_emoji }}
+            {% endfor %}
+          </li>
+          {% if meeting.has_actions %}
+            <li class="list-group-item">
+              <strong>Actions:</strong>
+              <ul class="list-group">
+                {% for action in meeting.actions.all() %}
+                  <li class="list-group-item d-flex justify-content-between align-items-center{% if action.was_successful %} list-group-item-success{% endif %}">
+                    <span>
+                    {% if action.owner %}
+                        <strong>[{{action.owner}}]</strong>
+                    {% endif %}
+                    {{ action.goal }}
+                    <a href="{{ url('action_update', meeting.id, action.id) }}">
+                      <i class="fa fa-pencil-alt"></i>
+                    </a>
+                    </span>
+                    {% if action.was_successful %}
+                      <span class="badge badge-success badge-pill">Success</span>
+                    {% endif %}
+                  </li>
+                {% endfor %}
+              </ul>
+            </li>
+          {% endif %}
+        </ul>
       </div>
 
       <div class="card-footer text-muted">
