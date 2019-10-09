@@ -3,5 +3,6 @@
 {% block title %}Meeting: {{ meeting.name }}{% endblock %}
 
 {% block content %}
-  <a href="{{ url('meeting_list') }}"> &leftarrow;&nbsp;Back to list</a>
+    <a href="{{ url("topic_create", meeting_id=meeting.id) }}" class="btn btn-primary">New Topic</a>
+    <a href="{{ url('meeting_list') }}" class="float-right"> &leftarrow;&nbsp;Back to list</a>
 {% endblock %}

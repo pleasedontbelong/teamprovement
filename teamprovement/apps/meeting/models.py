@@ -54,6 +54,7 @@ class Topic(models.Model):
     feeling = models.TextField()
     creator = models.ForeignKey(Participant, on_delete=models.CASCADE)
     action = models.ForeignKey(Action, on_delete=models.CASCADE, blank=True, null=True)
+    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE)
 
 
 class Comment(models.Model):
