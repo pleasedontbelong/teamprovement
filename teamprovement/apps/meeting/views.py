@@ -1,8 +1,8 @@
 from braces.views import LoginRequiredMixin
-from django.shortcuts import get_object_or_404
 from django.views.generic import (ListView, DetailView, CreateView, DeleteView,
-                                  UpdateView)
+                                  UpdateView, RedirectView)
 from django.urls import reverse_lazy, reverse
+from django.shortcuts import get_object_or_404
 
 from teamprovement.apps.meeting.forms import TopicForm
 from .models import Meeting, Topic
@@ -52,6 +52,17 @@ class MeetingUpdateView(MeetingCRUD, UpdateView):
     success_url = reverse_lazy('meeting_list')
     fields = ('name', 'status')
     context_object_name = "meeting"
+
+
+class MeetingJoinView(MeetingCRUD, RedirectView):
+    permanent = False
+    url = reverse_lazy('meeting_list')
+
+    def get(self, *args, **kwargs):
+        meeting = get_object_or_404(Meeting, pk=kwargs['pk'])
+        if not meeting.is_participant(self.request.user):
+            meeting.add(self.request.user)
+        return super().get(*args, **kwargs)
 
 
 class TopicCreateView(TopicCRUD, CreateView):
