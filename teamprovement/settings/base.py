@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'base',
-    'meeting'
+    'meeting',
+    'teamgoal'
 ]
 
 MIDDLEWARE = [
