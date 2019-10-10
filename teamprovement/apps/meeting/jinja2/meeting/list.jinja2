@@ -1,8 +1,30 @@
 {% extends "base.jinja2" %}
 
-{% block title %}Meetings{% endblock %}
+{% block title %}<i class="fa fa-rocket"></i> TeamRocket{% endblock %}
 
 {% block content %}
+  <h2>Team Goals</h2>
+  <a href="{{ url("teamgoal_create") }}" class="btn btn-primary">New Goal</a>
+  {% for teamgoal in teamgoals %}
+    <p>
+      <h5>
+        {{ teamgoal }} 
+        <a href="{{ url('teamgoal_update', teamgoal.id) }}"><i class="fa fa-pencil-alt"></i></a>
+        <a href="{{ url('teamgoal_delete', teamgoal.id) }}" class="text-danger"><i class="fa fa-trash-alt"></i></a>
+      </h5>
+      {% set actions = teamgoal.actions.all() %}
+      {% if actions|length %}
+          <ul class="list-group list-group-flush">
+            {% for action in actions %}
+              <li class="list-group-item">{{action}}</li>
+            {% endfor %}
+          </ul>      
+      {% endif %}
+    </p>
+    
+  {% endfor %}
+
+  <h2>Actions</h2>
 
   <a href="{{ url("meeting_create") }}" class="btn btn-primary">New Meeting</a>
 

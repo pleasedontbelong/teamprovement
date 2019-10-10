@@ -62,6 +62,8 @@ class Action(models.Model):
     owner = models.ForeignKey(Participant, on_delete=models.CASCADE, blank=True, null=True)
     meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE, related_name="actions")
 
+    def __str__(self):
+        return self.goal
 
 class Topic(models.Model):
     mood = models.PositiveSmallIntegerField(choices=MOOD_CHOICES)

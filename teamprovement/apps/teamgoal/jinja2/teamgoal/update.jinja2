@@ -1,0 +1,14 @@
+{% extends "base.jinja2" %}
+{% import 'macros/form_macros.jinja2' as form_macros with context %}
+
+{% block title %}Update Team Goal{% endblock %}
+
+{% block content %}
+  <div class="my-3 p-3 bg-white rounded box-shadow">
+    <form action="" method="post">
+      {{ form_macros.input(form.title) }}
+      {{ form_macros.input(form.actions) }}
+      {{ form_macros.submit(_("Update")) }}
+    </form>
+  </div>
+{% endblock %}

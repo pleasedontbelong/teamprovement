@@ -1,0 +1,14 @@
+{% extends "base.jinja2" %}
+{% import 'macros/form_macros.jinja2' as form_macros with context %}
+
+{% block title %}Delete Meeting{% endblock %}
+
+{% block content %}
+  <div class="my-3 p-3 bg-white rounded box-shadow">
+    <form action="" method="post">
+      <p>Are you sure you want to delete <strong>&quot;{{ teamgoal }}&quot;</strong>?</p>
+      {{ form_macros.submit(_("Delete")) }}
+      <a href="{{ url('meeting_list') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+{% endblock %}

@@ -4,6 +4,7 @@ from django.views.generic import (ListView, DetailView, CreateView, DeleteView,
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 
+from teamgoal.models import TeamGoal
 from .forms import TopicForm, ActionCreateForm, ActionUpdateForm
 from .models import Meeting, Topic, Action
 
@@ -32,6 +33,11 @@ class MeetingListView(MeetingCRUD, ListView):
     template_name = "meeting/list.jinja2"
     context_object_name = "meetings"
     ordering = "status"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['teamgoals'] = TeamGoal.objects.all()
+        return context
 
 
 class MeetingDetailView(MeetingCRUD, DetailView):
