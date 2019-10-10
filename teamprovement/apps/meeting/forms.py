@@ -23,7 +23,7 @@ class TopicForm(forms.ModelForm):
 class ActionCreateForm(forms.ModelForm):
     class Meta:
         model = Action
-        fields = ('goal', 'body', 'owner')
+        fields = ('goal', 'description', 'owner')
 
     def __init__(self, *args, **kwargs):
         self.meeting = kwargs.pop('meeting')
@@ -44,7 +44,7 @@ class ActionCreateForm(forms.ModelForm):
 class ActionUpdateForm(ActionCreateForm):
     class Meta:
         model = Action
-        fields = ('goal', 'body', 'owner', 'was_successful')
+        fields = ('goal', 'description', 'owner', 'was_successful')
 
     def save(self, **kwargs):
         self.instance.save()

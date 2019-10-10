@@ -48,7 +48,7 @@
                     {% if action.owner %}
                         <strong>[{{action.owner}}]</strong>
                     {% endif %}
-                    {{ action.goal }}
+                    {{ action.description }}
                     <a href="{{ url('action_update', meeting.id, action.id) }}">
                       <i class="fa fa-pencil-alt"></i>
                     </a>

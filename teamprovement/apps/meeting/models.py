@@ -57,7 +57,7 @@ class Participant(models.Model):
 
 class Action(models.Model):
     goal = models.CharField(max_length=255)
-    body = models.TextField()
+    description = models.CharField(max_length=255, null=True)
     was_successful = models.BooleanField(blank=True, null=True)
     owner = models.ForeignKey(Participant, on_delete=models.CASCADE, blank=True, null=True)
     meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE, related_name="actions")
