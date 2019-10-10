@@ -65,6 +65,7 @@ class Action(models.Model):
     def __str__(self):
         return self.goal
 
+
 class Topic(models.Model):
     mood = models.PositiveSmallIntegerField(choices=MOOD_CHOICES)
     fact = models.CharField(max_length=255)
