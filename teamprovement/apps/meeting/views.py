@@ -32,7 +32,7 @@ class ActionCRUD(LoginRequiredMixin):
 class MeetingListView(MeetingCRUD, ListView):
     template_name = "meeting/list.jinja2"
     context_object_name = "meetings"
-    ordering = "status"
+    ordering = ("-created_at")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
