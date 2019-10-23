@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'base',
     'meeting',
-    'teamgoal'
+    'teamgoal',
+    'team'
 ]
 
 MIDDLEWARE = [

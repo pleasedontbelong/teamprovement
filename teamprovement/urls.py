@@ -9,9 +9,10 @@ from django.urls import reverse_lazy
 from base.forms import AuthenticationForm
 
 urlpatterns = [
-    url(r'^$', RedirectView.as_view(url=reverse_lazy('meeting_list')), name="homepage"),
+    url(r'^$', RedirectView.as_view(url=reverse_lazy('team')), name="homepage"),
     url(r'^meetings/', include('meeting.urls')),
-    url(r'^teamgoal/', include('teamgoal.urls')),
+    url(r'^team/', include('team.urls')),
+    url(r'^team_goals/', include('teamgoal.urls')),
     url(r'^login/$',
         views.LoginView.as_view(
             form_class=AuthenticationForm,
