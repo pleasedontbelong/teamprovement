@@ -3,34 +3,32 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Teamprovement POC</title>
+    <title>TeamProvement</title>
     {% stylesheet 'main' %}
   </head>
   <body>
     <header>
-      <div class="collapse bg-dark" id="navbarHeader">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-8 col-md-7 py-4"></div>
-            <div class="col-sm-4 offset-md-1 py-4 text-right">
-              <ul class="list-unstyled">
-                <li><a href="{{ url('logout') }}" class="text-white">Logout</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="navbar navbar-dark bg-dark shadow-sm">
+      <div class="navbar navbar-dark navbar-expand-md bg-dark shadow-sm">
         <div class="container d-flex justify-content-between">
           <a href="/" class="navbar-brand d-flex align-items-center">
-            <strong>Teamprovement</strong>
+            <i class="fa fa-rocket"></i>&nbsp;<strong>TeamProvement</strong>
           </a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
-            <i class="fa fa-bars"></i>
-          </button>
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url('team') }}">Our Team</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url('teamgoal_list') }}">Our Goals</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url('meeting_list') }}">Our Meetings</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url('logout') }}">Logout</a>
+            </li>
+          </ul>
         </div>
       </div>
-      
     </header>
 
     <main role="main">

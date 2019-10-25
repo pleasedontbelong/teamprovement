@@ -1,49 +1,15 @@
 {% extends "base.jinja2" %}
 
-{% block title %}<i class="fa fa-rocket"></i> TeamRocket{% endblock %}
+{% block title %}Our Meetings{% endblock %}
 
 {% block content %}
-  <h2>Team Goals</h2>
-  <a href="{{ url("teamgoal_create") }}" class="btn btn-primary">New Goal</a>
-  {% for teamgoal in teamgoals %}
-    <p>
-      <h5>
-        {{ teamgoal }} 
-        <a href="{{ url('teamgoal_update', teamgoal.id) }}"><i class="fa fa-pencil-alt"></i></a>
-        <a href="{{ url('teamgoal_delete', teamgoal.id) }}" class="text-danger"><i class="fa fa-trash-alt"></i></a>
-      </h5>
-      {% set actions = teamgoal.actions.all() %}
-      {% if actions|length %}
-          <ul class="list-group list-group-flush">
-            {% for action in actions %}
-              <li class="list-group-item">{{action}}</li>
-            {% endfor %}
-          </ul>      
-      {% endif %}
-    </p>
-    
-  {% endfor %}
-
-  <h2>Actions</h2>
-
-  <a href="{{ url("meeting_create") }}" class="btn btn-primary">New Meeting</a>
+  <p>
+    <a href="{{ url("meeting_create") }}" class="btn btn-primary">New Meeting</a>
+  </p>
 
   {% for meeting in meetings %}
     <div class="card mt-4 {% if meeting.is_opened %}border-success{% endif %}">
       <div class="card-body">
-        <div class="btn-group float-right" role="group">
-          {% if not meeting.is_participant(user) %}             
-            <a href="{{ url('meeting_join', meeting.id) }}" class="btn btn-success">
-              <i class="fa fa-user-plus"></i> Join
-            </a>
-          {% endif %}
-          <a href="{{ url('meeting_update', meeting.id) }}" class="btn btn-info">
-            <i class="fa fa-pencil-alt"></i>
-          </a>
-          <a href="{{ url('meeting_delete', meeting.id) }}" class="btn btn-danger">
-            <i class="fa fa-trash-alt"></i>
-          </a>
-        </div>
         <h5 class="{% if not meeting.is_opened %}text-secondary{% endif %}">
           <a href="{{ url('meeting_detail', meeting.id) }}"
              class="{% if not meeting.is_opened %}text-secondary{% endif %}">
@@ -95,6 +61,21 @@
           {% endif %}
           created at {{ meeting.created_at.strftime('%Y-%m-%d %H:%M') }}
         </em>
+        <div class="btn-group float-right" role="group">
+          <p>
+            {% if not meeting.is_participant(user) %}
+              <a href="{{ url('meeting_join', meeting.id) }}" class="btn btn-sm btn-success">
+                <i class="fa fa-user-plus"></i>&nbsp;Join
+              </a>
+            {% endif %}
+            <a href="{{ url('meeting_update', meeting.id) }}" class="btn btn-sm btn-info">
+              <i class="fa fa-pencil-alt"></i>&nbsp;Edit
+            </a>
+            <a href="{{ url('meeting_delete', meeting.id) }}" class="btn btn-sm btn-danger">
+              <i class="fa fa-trash-alt"></i>&nbsp;Delete
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   {% endfor %}

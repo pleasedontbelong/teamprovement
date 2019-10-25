@@ -53,12 +53,12 @@
             <p>
               {% if topic.created_by(user) %}
                 <a href="{{ url('topic_update', meeting.id, topic.id) }}" class="btn btn-sm btn-info">
-                  <i class="fa fa-pencil-alt"></i> Edit
+                  <i class="fa fa-pencil-alt"></i>&nbsp;Edit
                 </a>
               {% endif %}
               {% if not topic.action %}
                 <a href="{{ url('action_create', meeting.id, topic.id) }}" class="btn btn-sm btn-success">
-                  <i class="fa fa-lightbulb"></i> Add Action
+                  <i class="fa fa-lightbulb"></i>&nbsp;Add Action
                 </a>
               {% endif %}
             </p>           

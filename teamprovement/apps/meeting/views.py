@@ -34,11 +34,6 @@ class MeetingListView(MeetingCRUD, ListView):
     context_object_name = "meetings"
     ordering = ("-created_at")
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['teamgoals'] = TeamGoal.objects.all()
-        return context
-
 
 class MeetingDetailView(MeetingCRUD, DetailView):
     template_name = "meeting/detail.jinja2"
@@ -162,3 +157,5 @@ class ActionUpdateView(ActionCRUD, UpdateView):
         form_kwargs['topic'] = None
         form_kwargs['meeting'] = self.meeting
         return form_kwargs
+
+
