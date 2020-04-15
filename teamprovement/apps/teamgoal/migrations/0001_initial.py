@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('meeting', '0008_auto_20191010_0819'),
+        ('meeting', '0008_auto_20191010_0906'),
     ]
 
     operations = [
