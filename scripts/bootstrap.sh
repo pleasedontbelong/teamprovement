@@ -14,6 +14,12 @@ else
     git init
     echo -n -e "\e[32mMigrate\e[0m"
     python manage.py migrate
+    if [ ! -d assets ]; then
+        echo -e "\e[32mCreating local assets directory\e[0m"
+        mkdir assets
+    fi
+    echo -e "\e[32mCollecting static files\e[0m"
+    python manage.py collectstatic
     echo -n -e "\e[32mDo you want to create a superuser now? (y/n)?\e[0m"
     read answer
     if echo "$answer" | grep -iq "^y" ;then
