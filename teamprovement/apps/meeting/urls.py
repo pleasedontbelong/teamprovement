@@ -22,4 +22,9 @@ urlpatterns = [
         views.ActionUpdateView.as_view(),
         name='action_update'
     ),
+    path(
+        '<int:meeting_id>/topic/<int:topic_id>/comment/add',
+        views.CommentCreateView.as_view(),
+        name='comment_create'
+    ),
 ]

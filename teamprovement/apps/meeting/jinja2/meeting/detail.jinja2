@@ -60,8 +60,20 @@
                 <a href="{{ url('action_create', meeting.id, topic.id) }}" class="btn btn-sm btn-success">
                   <i class="fa fa-lightbulb"></i>&nbsp;Add Action
                 </a>
+                <a href="{{ url('comment_create', meeting.id, topic.id) }}" class="btn btn-sm btn-success">
+                  <i class="fa fa-lightbulb"></i>&nbsp;Add comment
+                </a>
               {% endif %}
             </p>           
+          </div>
+
+          <div >
+            {% for comment in topic.comment_set.all() %}
+            
+            <div class="card-text">
+              {{ comment.author }}: {{ comment.body }}
+            </div>
+            {% endfor %}
           </div>
         </div>
       </div>
