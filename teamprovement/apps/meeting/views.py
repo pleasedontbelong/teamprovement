@@ -1,4 +1,4 @@
-from braces.views import LoginRequiredMixin
+from braces.views import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import (ListView, DetailView, CreateView, DeleteView,
                                   UpdateView, RedirectView)
 from django.urls import reverse_lazy, reverse
@@ -6,12 +6,11 @@ from django.shortcuts import get_object_or_404
 
 from teamgoal.models import TeamGoal
 from .forms import TopicForm, ActionCreateForm, ActionUpdateForm, CommentCreateForm
-from .models import Meeting, Topic, Action, Comment
+from .models import Meeting, Topic, Action, Comment, Participant
 
 
 class MeetingCRUD(LoginRequiredMixin):
     model = Meeting
-
 
 class TopicCRUD(LoginRequiredMixin):
     model = Topic
@@ -34,6 +33,12 @@ class ActionCRUD(LoginRequiredMixin):
         self.meeting = Meeting.objects.get(pk=kwargs['meeting_id'])
         return super().dispatch(request, *args, **kwargs)
 
+class ParticipantAccessMixin(UserPassesTestMixin):
+    raise_exception = True
+
+    def test_func(self, user):
+        return Participant.objects.filter(user=user, meeting_id=self.kwargs['pk']).exists()
+
 
 class MeetingListView(MeetingCRUD, ListView):
     template_name = "meeting/list.jinja2"
@@ -41,7 +46,7 @@ class MeetingListView(MeetingCRUD, ListView):
     ordering = ("-created_at")
 
 
-class MeetingDetailView(MeetingCRUD, DetailView):
+class MeetingDetailView(MeetingCRUD, ParticipantAccessMixin, DetailView):
     template_name = "meeting/detail.jinja2"
 
 
@@ -57,12 +62,12 @@ class MeetingCreateView(MeetingCRUD, CreateView):
         return redirect
 
 
-class MeetingDeleteView(MeetingCRUD, DeleteView):
+class MeetingDeleteView(MeetingCRUD, ParticipantAccessMixin, DeleteView):
     template_name = "meeting/delete.jinja2"
     success_url = reverse_lazy('meeting_list')
 
 
-class MeetingUpdateView(MeetingCRUD, UpdateView):
+class MeetingUpdateView(MeetingCRUD, ParticipantAccessMixin, UpdateView):
     template_name = "meeting/update.jinja2"
     success_url = reverse_lazy('meeting_list')
     fields = ('name', 'status')
@@ -190,3 +195,5 @@ class CommentCreateView(CommentCRUD, CreateView):
 
     def get_success_url(self):
         return reverse('meeting_detail', args=[self.meeting.id])
+
+
