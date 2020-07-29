@@ -10,3 +10,5 @@ MEETING_STATUS_CHOICES = Choices(
     ('OPENED', 0, 'Opened'),
     ('CLOSED', 1, 'Closed')
 )
+
+MAX_VOTES_PER_MEETING = 5

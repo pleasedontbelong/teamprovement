@@ -27,4 +27,14 @@ urlpatterns = [
         views.CommentCreateView.as_view(),
         name='comment_create'
     ),
+    path(
+        '<int:meeting_id>/topic/<int:topic_id>/vote',
+        views.VoteTopicView.as_view(),
+        name='topic_vote'
+    ),
+    path(
+        '<int:meeting_id>/topic/<int:topic_id>/unvote',
+        views.UnvoteTopicView.as_view(),
+        name='topic_unvote'
+    ),
 ]

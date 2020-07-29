@@ -2,15 +2,17 @@ from braces.views import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import (ListView, DetailView, CreateView, DeleteView,
                                   UpdateView, RedirectView)
 from django.urls import reverse_lazy, reverse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
 
-from teamgoal.models import TeamGoal
 from .forms import TopicForm, ActionCreateForm, ActionUpdateForm, CommentCreateForm
-from .models import Meeting, Topic, Action, Comment, Participant
+from .models import Meeting, Topic, Action, Comment, Participant, Vote
+from .exceptions import MaxVotesPerParticipantException
 
 
 class MeetingCRUD(LoginRequiredMixin):
     model = Meeting
+
 
 class TopicCRUD(LoginRequiredMixin):
     model = Topic
@@ -19,6 +21,7 @@ class TopicCRUD(LoginRequiredMixin):
         self.meeting = Meeting.objects.get(pk=kwargs['meeting_id'])
         return super().dispatch(request, *args, **kwargs)
 
+
 class CommentCRUD(LoginRequiredMixin):
     model = Comment
 
@@ -26,12 +29,14 @@ class CommentCRUD(LoginRequiredMixin):
         self.meeting = Meeting.objects.get(pk=kwargs['meeting_id'])
         return super().dispatch(request, *args, **kwargs)
 
+
 class ActionCRUD(LoginRequiredMixin):
     model = Action
 
     def dispatch(self, request, *args, **kwargs):
         self.meeting = Meeting.objects.get(pk=kwargs['meeting_id'])
         return super().dispatch(request, *args, **kwargs)
+
 
 class ParticipantAccessMixin(UserPassesTestMixin):
     raise_exception = True
@@ -197,3 +202,51 @@ class CommentCreateView(CommentCRUD, CreateView):
         return reverse('meeting_detail', args=[self.meeting.id])
 
 
+class VoteTopicView(CreateView):
+    model = Vote
+    fields = ('topic', 'participant')
+
+    def dispatch(self, request, *args, **kwargs):
+        self.meeting = Meeting.objects.get(pk=kwargs['meeting_id'])
+        try:
+            return super().dispatch(request, *args, **kwargs)
+        except MaxVotesPerParticipantException:
+            messages.error(self.request, "Max votes reached")
+            return redirect(reverse('meeting_detail', args=[self.meeting.id]))
+
+    def get_form_kwargs(self):
+        kwargs = {
+            'initial': self.get_initial(),
+            'prefix': self.get_prefix(),
+        }
+        if self.request.method in ('POST', 'PUT'):
+            kwargs.update({
+                'data': {
+                    'topic': self.kwargs['topic_id'],
+                    'participant': self.meeting.participants.get(
+                        user=self.request.user
+                    ).pk
+                }
+            })
+        return kwargs
+
+    def get_success_url(self):
+        return reverse('meeting_detail', args=[self.meeting.id])
+
+
+class UnvoteTopicView(DeleteView):
+    model = Vote
+
+    def dispatch(self, request, *args, **kwargs):
+        self.meeting = Meeting.objects.get(pk=kwargs['meeting_id'])
+        self.topic = Topic.objects.get(pk=kwargs['topic_id'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_object(self, *args, **kwargs):
+        return Vote.objects.filter(
+            topic=self.topic,
+            participant=self.meeting.participants.get(user=self.request.user)
+        ).first()
+
+    def get_success_url(self):
+        return reverse('meeting_detail', args=[self.meeting.id])

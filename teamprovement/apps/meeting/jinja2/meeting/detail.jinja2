@@ -1,4 +1,5 @@
 {% extends "base.jinja2" %}
+{% import 'macros/form_macros.jinja2' as form_macros with context %}
 
 {% block title %}Meeting: {{ meeting.name }}{% endblock %}
 
@@ -13,7 +14,16 @@
     {% for topic in meeting.topics.all() %}
       <div class="card mt-4 border-{{ topic.mood | mood_class }}">
         <div class="card-header text-white bg-{{ topic.mood | mood_class }}">
-            {{ topic.mood | mood_emoji }}
+          {{ topic.mood | mood_emoji }}
+          <p>Votes: <span class="badge badge-info">{{ topic.total_votes }}</span></p>
+          <form method="POST" action="{{ url('topic_vote', meeting.id, topic.id) }}">
+            {{ form_macros.submit(_("Vote")) }}
+          </form>
+          {% if topic.user_has_voted(user) %}
+            <form method="POST" action="{{ url('topic_unvote', meeting.id, topic.id) }}">
+              {{ form_macros.submit(_("Unvote")) }}
+            </form>
+          {% endif %}
           <em class="float-right">{{ topic.creator }}</em>
         </div>
         <div class="card-body">
@@ -60,10 +70,10 @@
                 <a href="{{ url('action_create', meeting.id, topic.id) }}" class="btn btn-sm btn-success">
                   <i class="fa fa-lightbulb"></i>&nbsp;Add Action
                 </a>
-                <a href="{{ url('comment_create', meeting.id, topic.id) }}" class="btn btn-sm btn-success">
-                  <i class="fa fa-lightbulb"></i>&nbsp;Add comment
-                </a>
               {% endif %}
+              <a href="{{ url('comment_create', meeting.id, topic.id) }}" class="btn btn-sm btn-success">
+                <i class="fa fa-lightbulb"></i>&nbsp;Add comment
+              </a>
             </p>           
           </div>
 
