@@ -1,17 +1,16 @@
-from braces.views import LoginRequiredMixin
+from braces.views import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import (ListView, DetailView, CreateView, DeleteView,
                                   UpdateView, RedirectView)
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 
 from teamgoal.models import TeamGoal
-from .forms import TopicForm, ActionCreateForm, ActionUpdateForm
-from .models import Meeting, Topic, Action
+from .forms import TopicForm, ActionCreateForm, ActionUpdateForm, CommentCreateForm
+from .models import Meeting, Topic, Action, Comment, Participant
 
 
 class MeetingCRUD(LoginRequiredMixin):
     model = Meeting
-
 
 class TopicCRUD(LoginRequiredMixin):
     model = Topic
@@ -20,6 +19,12 @@ class TopicCRUD(LoginRequiredMixin):
         self.meeting = Meeting.objects.get(pk=kwargs['meeting_id'])
         return super().dispatch(request, *args, **kwargs)
 
+class CommentCRUD(LoginRequiredMixin):
+    model = Comment
+
+    def dispatch(self, request, *args, **kwargs):
+        self.meeting = Meeting.objects.get(pk=kwargs['meeting_id'])
+        return super().dispatch(request, *args, **kwargs)
 
 class ActionCRUD(LoginRequiredMixin):
     model = Action
@@ -28,6 +33,12 @@ class ActionCRUD(LoginRequiredMixin):
         self.meeting = Meeting.objects.get(pk=kwargs['meeting_id'])
         return super().dispatch(request, *args, **kwargs)
 
+class ParticipantAccessMixin(UserPassesTestMixin):
+    raise_exception = True
+
+    def test_func(self, user):
+        return Participant.objects.filter(user=user, meeting_id=self.kwargs['pk']).exists()
+
 
 class MeetingListView(MeetingCRUD, ListView):
     template_name = "meeting/list.jinja2"
@@ -35,7 +46,7 @@ class MeetingListView(MeetingCRUD, ListView):
     ordering = ("-created_at")
 
 
-class MeetingDetailView(MeetingCRUD, DetailView):
+class MeetingDetailView(MeetingCRUD, ParticipantAccessMixin, DetailView):
     template_name = "meeting/detail.jinja2"
 
 
@@ -51,12 +62,12 @@ class MeetingCreateView(MeetingCRUD, CreateView):
         return redirect
 
 
-class MeetingDeleteView(MeetingCRUD, DeleteView):
+class MeetingDeleteView(MeetingCRUD, ParticipantAccessMixin, DeleteView):
     template_name = "meeting/delete.jinja2"
     success_url = reverse_lazy('meeting_list')
 
 
-class MeetingUpdateView(MeetingCRUD, UpdateView):
+class MeetingUpdateView(MeetingCRUD, ParticipantAccessMixin, UpdateView):
     template_name = "meeting/update.jinja2"
     success_url = reverse_lazy('meeting_list')
     fields = ('name', 'status')
@@ -157,5 +168,32 @@ class ActionUpdateView(ActionCRUD, UpdateView):
         form_kwargs['topic'] = None
         form_kwargs['meeting'] = self.meeting
         return form_kwargs
+
+
+class CommentCreateView(CommentCRUD, CreateView):
+    model = Comment
+    template_name = "comment/create.jinja2"
+    form_class = CommentCreateForm
+
+    def dispatch(self, request, *args, **kwargs):
+        self.topic = Topic.objects.get(
+            pk=kwargs['topic_id']
+        )
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['meeting'] = self.meeting
+        context['topic'] = self.topic
+        return context
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs['topic'] = self.topic
+        form_kwargs['author'] = self.meeting.participants.get(user=self.request.user)
+        return form_kwargs
+
+    def get_success_url(self):
+        return reverse('meeting_detail', args=[self.meeting.id])
 
 

@@ -11,10 +11,14 @@
     <div class="card mt-4 {% if meeting.is_opened %}border-success{% endif %}">
       <div class="card-body">
         <h5 class="{% if not meeting.is_opened %}text-secondary{% endif %}">
-          <a href="{{ url('meeting_detail', meeting.id) }}"
-             class="{% if not meeting.is_opened %}text-secondary{% endif %}">
+          {% if meeting.is_participant(user) %}
+            <a href="{{ url('meeting_detail', meeting.id) }}"
+               class="{% if not meeting.is_opened %}text-secondary{% endif %}">
+              {{ meeting.name }}
+            </a>
+          {% else %}
             {{ meeting.name }}
-          </a>
+          {% endif %}
         </h5>
         <ul class="list-group">
           <li class="list-group-item">
