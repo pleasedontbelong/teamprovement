@@ -5,7 +5,7 @@ from django.urls import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 
 from teamgoal.models import TeamGoal
-from .forms import TopicForm, ActionCreateForm, ActionUpdateForm, CommentCreateForm
+from .forms import TopicForm, ActionCreateForm, ActionUpdateForm, CommentCreateForm, CommentUpdateForm
 from .models import Meeting, Topic, Action, Comment, Participant
 
 
@@ -197,3 +197,28 @@ class CommentCreateView(CommentCRUD, CreateView):
         return reverse('meeting_detail', args=[self.meeting.id])
 
 
+class CommentUpdateView(CommentCRUD, UpdateView):
+    model = Comment
+    template_name = "comment/update.jinja2"
+    form_class = CommentUpdateForm
+
+    def dispatch(self, request, *args, **kwargs):
+        self.topic = Topic.objects.get(
+            pk=kwargs['topic_id']
+        )
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['meeting'] = self.meeting
+        context['topic'] = self.topic
+        return context
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs['topic'] = self.topic
+        form_kwargs['author'] = self.meeting.participants.get(user=self.request.user)
+        return form_kwargs
+
+    def get_success_url(self):
+        return reverse('meeting_detail', args=[self.meeting.id])

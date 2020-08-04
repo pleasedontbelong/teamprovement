@@ -65,6 +65,21 @@ class CommentCreateForm(forms.ModelForm):
         self.instance.topic = self.topic
         self.instance.author = self.author
         self.instance.save()
-        return self.instance      
-      
-        
+        return self.instance   
+
+
+class CommentUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('body',)
+
+    def __init__(self, *args, **kwargs):
+        self.topic = kwargs.pop('topic')
+        self.author = kwargs.pop('author')
+        super().__init__(*args, **kwargs)
+
+    def save(self, **kwargs): 
+        self.instance.topic = self.topic
+        self.instance.author = self.author
+        self.instance.save()
+        return self.instance
