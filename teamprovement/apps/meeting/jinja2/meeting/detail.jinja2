@@ -48,16 +48,16 @@
             </div>
           {% endif %}
         </div>
-        <hr>
         <div class="card-body">
           {% if topic.comment_set.first() %}
+            <hr>
             <h5 class="card-title">Comments</h5>
           {% endif %}
           {% for comment in topic.comment_set.all() %}
             <div class="card-text">
               {{ comment.author }}: {{ comment.body }}
                 {% if comment.is_author(user) %}
-                  <a href="{{ url('comment_update', meeting.id, topic.id, comment.id) }}" class="btn btn-sm btn-secondary">
+                  <a href="{{ url('comment_update', meeting.id, topic.id, comment.id) }}" class="btn btn-sm btn-light">
                   <i class="fa fa-pencil-alt"></i>
                   </a>
               {% endif %}
