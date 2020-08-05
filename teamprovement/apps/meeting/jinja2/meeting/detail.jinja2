@@ -58,7 +58,10 @@
               {{ comment.author }}: {{ comment.body }}
                 {% if comment.is_author(user) %}
                   <a href="{{ url('comment_update', meeting.id, topic.id, comment.id) }}" class="btn btn-sm btn-light">
-                  <i class="fa fa-pencil-alt"></i>
+                    <i class="fa fa-pencil-alt"></i>
+                  </a>
+                  <a href="{{ url('comment_delete', meeting.id, topic.id, comment.id) }}" class="btn btn-sm btn-light">
+                    <i class="far fa-trash-alt"></i>
                   </a>
               {% endif %}
             </div>

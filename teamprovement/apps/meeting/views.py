@@ -39,6 +39,12 @@ class ParticipantAccessMixin(UserPassesTestMixin):
     def test_func(self, user):
         return Participant.objects.filter(user=user, meeting_id=self.kwargs['pk']).exists()
 
+# To allow only author of a comment to update or delete it
+class CommentEditMixin(UserPassesTestMixin):
+    raise_exception = True
+
+    def test_func(self, user):
+        return Comment.objects.filter(author__user=user, id=self.kwargs['pk']).exists()
 
 class MeetingListView(MeetingCRUD, ListView):
     template_name = "meeting/list.jinja2"
@@ -197,7 +203,7 @@ class CommentCreateView(CommentCRUD, CreateView):
         return reverse('meeting_detail', args=[self.meeting.id])
 
 
-class CommentUpdateView(CommentCRUD, UpdateView):
+class CommentUpdateView(CommentCRUD, CommentEditMixin, UpdateView):
     model = Comment
     template_name = "comment/update.jinja2"
     form_class = CommentUpdateForm
@@ -219,6 +225,18 @@ class CommentUpdateView(CommentCRUD, UpdateView):
         form_kwargs['topic'] = self.topic
         form_kwargs['author'] = self.meeting.participants.get(user=self.request.user)
         return form_kwargs
+
+    def get_success_url(self):
+        return reverse('meeting_detail', args=[self.meeting.id])
+
+
+class CommentDeleteView(CommentCRUD, CommentEditMixin, DeleteView):
+    template_name = "comment/delete.jinja2"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['meeting'] = self.meeting
+        return context
 
     def get_success_url(self):
         return reverse('meeting_detail', args=[self.meeting.id])
