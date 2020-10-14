@@ -237,6 +237,9 @@ class VoteTopicView(CreateView):
             })
         return kwargs
 
+    def get_success_url(self):
+        return reverse('meeting_detail', args=[self.meeting.id])
+
 class CommentUpdateView(CommentCRUD, CommentEditMixin, UpdateView):
     model = Comment
     template_name = "comment/update.jinja2"
