@@ -1,0 +1,2 @@
+class MaxVotesPerParticipantException(Exception):
+    pass

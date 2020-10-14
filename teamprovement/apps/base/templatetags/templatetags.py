@@ -18,6 +18,13 @@ def add_placeholder(field, placeholder):
 
 
 @library.filter
+def hidden(field):
+    attrs = field.field.widget.attrs
+    attrs['type'] = 'hidden'
+    return field
+
+
+@library.filter
 def shuffle(items):
     items = list(items)
     random.shuffle(items)

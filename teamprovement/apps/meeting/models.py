@@ -2,7 +2,8 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
 from collections import defaultdict
 
-from meeting.constants import MEETING_STATUS_CHOICES, MOOD_CHOICES
+from meeting.constants import MEETING_STATUS_CHOICES, MOOD_CHOICES, MAX_VOTES_PER_MEETING
+from .exceptions import MaxVotesPerParticipantException
 
 
 class Meeting(models.Model):
@@ -81,6 +82,13 @@ class Topic(models.Model):
     def created_by(self, user):
         return self.creator.user == user
 
+    def user_has_voted(self, user):
+        return self.votes.filter(participant__user=user).exists()
+
+    @property
+    def total_votes(self):
+        return self.votes.count()
+
 
 class Comment(models.Model):
     author = models.ForeignKey(Participant, on_delete=models.CASCADE)
@@ -92,5 +100,12 @@ class Comment(models.Model):
 
 class Vote(models.Model):
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
-    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
-    mood = models.PositiveSmallIntegerField()
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='votes')
+
+    def save(self, *args, **kwargs):
+        participant_votes_count = Vote.objects.filter(
+            topic__meeting=self.topic.meeting,
+            participant=self.participant).count()
+        if participant_votes_count >= MAX_VOTES_PER_MEETING:
+            raise MaxVotesPerParticipantException("Max Votes")
+        return super().save(*args, **kwargs)
