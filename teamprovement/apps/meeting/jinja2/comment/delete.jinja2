@@ -1,0 +1,14 @@
+{% extends "base.jinja2" %}
+{% import 'macros/form_macros.jinja2' as form_macros with context %}
+
+{% block title %}Delete comment{% endblock %}
+
+{% block content %}
+  <div class="my-3 p-3 bg-white rounded box-shadow">
+    <form action="" method="post">
+      <p>Are you sure you want to delete your comment: <strong>&quot;{{ comment.body }}&quot;</strong>?</p>
+      <a href="{{ url('meeting_detail', meeting.id) }}" class="btn btn-secondary">Cancel</a>
+      {{ form_macros.submit(_("Delete")) }}
+    </form>
+  </div>
+{% endblock %}

@@ -58,12 +58,31 @@
             </div>
           {% endif %}
         </div>
+        <div class="card-body">
+          {% if topic.comment_set.first() %}
+            <hr>
+            <h5 class="card-title">Comments</h5>
+          {% endif %}
+          {% for comment in topic.comment_set.all() %}
+            <div class="card-text">
+              {{ comment.author }}: {{ comment.body }}
+                {% if comment.is_author(user) %}
+                  <a href="{{ url('comment_update', meeting.id, topic.id, comment.id) }}" class="btn btn-sm btn-light">
+                    <i class="fa fa-pencil-alt"></i>
+                  </a>
+                  <a href="{{ url('comment_delete', meeting.id, topic.id, comment.id) }}" class="btn btn-sm btn-light">
+                    <i class="far fa-trash-alt"></i>
+                  </a>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
         <div class="card-footer">
           <div class="btn-group float-right" role="group" aria-label="Basic example">
             <p>
               {% if topic.created_by(user) %}
                 <a href="{{ url('topic_update', meeting.id, topic.id) }}" class="btn btn-sm btn-info">
-                  <i class="fa fa-pencil-alt"></i>&nbsp;Edit
+                  <i class="fa fa-pencil-alt"></i>&nbsp;Edit topic
                 </a>
               {% endif %}
               {% if not topic.action %}
@@ -75,15 +94,6 @@
                 <i class="fa fa-lightbulb"></i>&nbsp;Add comment
               </a>
             </p>           
-          </div>
-
-          <div >
-            {% for comment in topic.comment_set.all() %}
-            
-            <div class="card-text">
-              {{ comment.author }}: {{ comment.body }}
-            </div>
-            {% endfor %}
           </div>
         </div>
       </div>

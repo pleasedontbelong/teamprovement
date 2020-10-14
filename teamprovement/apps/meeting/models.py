@@ -95,6 +95,8 @@ class Comment(models.Model):
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
     body = models.TextField()
 
+    def is_author(self, user):
+        return self.author.user == user
 
 class Vote(models.Model):
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
