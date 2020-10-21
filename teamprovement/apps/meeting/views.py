@@ -9,7 +9,7 @@ from .models import Meeting, Topic, Action, Comment, Participant, Vote
 from .exceptions import MaxVotesPerParticipantException
 from teamgoal.models import TeamGoal
 from .forms import TopicForm, ActionCreateForm, ActionUpdateForm, CommentCreateForm, CommentUpdateForm
-
+from django.db.models import Count
 
 class MeetingCRUD(LoginRequiredMixin):
     model = Meeting
@@ -60,6 +60,12 @@ class MeetingListView(MeetingCRUD, ListView):
 
 class MeetingDetailView(MeetingCRUD, ParticipantAccessMixin, DetailView):
     template_name = "meeting/detail.jinja2"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        sort = self.request.GET.get('sort', '-pk')
+        context['topics'] = self.object.get_topics(sort)
+        return context
 
 
 class MeetingCreateView(MeetingCRUD, CreateView):
