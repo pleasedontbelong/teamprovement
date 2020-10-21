@@ -6,16 +6,16 @@
 {% block content %}
   {% if meeting.is_participant(user) %}
     <a href="{{ url("topic_create", meeting_id=meeting.id) }}" class="btn btn-primary">New Topic</a>
+    <a href="{{ url('meeting_detail', meeting.id) }}?sort=-count_vote" class="btn btn-primary">Sort by total vote</a>
   {% else %}
     <em>Only participants can create topics for this meeting</em>  
   {% endif %}
   <a href="{{ url('meeting_list') }}" class="float-right">&leftarrow;&nbsp;Back to meetings list</a>
-
-    {% for topic in meeting.topics.all() %}
+    {% for topic in topics %}
       <div class="card mt-4 border-{{ topic.mood | mood_class }}">
         <div class="card-header text-white bg-{{ topic.mood | mood_class }}">
           {{ topic.mood | mood_emoji }}
-          <p>Votes: <span class="badge badge-info">{{ topic.total_votes }}</span></p>
+          <p>Votes: <span class="badge badge-info">{{ topic.count_vote }}</span></p>
           <form method="POST" action="{{ url('topic_vote', meeting.id, topic.id) }}">
             {{ form_macros.submit(_("Vote")) }}
           </form>

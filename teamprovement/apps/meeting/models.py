@@ -1,5 +1,6 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
+from django.db.models import Count
 from collections import defaultdict
 
 from meeting.constants import MEETING_STATUS_CHOICES, MOOD_CHOICES, MAX_VOTES_PER_MEETING
@@ -38,6 +39,9 @@ class Meeting(models.Model):
     def has_actions(self):
         return self.actions.exists()
 
+
+    def get_topics(self, order_by):
+        return self.topics.all().annotate(count_vote=Count('votes')).order_by(order_by)
 
 class User(AbstractBaseUser):
     username = models.CharField(max_length=50, unique=True)
@@ -84,11 +88,6 @@ class Topic(models.Model):
 
     def user_has_voted(self, user):
         return self.votes.filter(participant__user=user).exists()
-
-    @property
-    def total_votes(self):
-        return self.votes.count()
-
 
 class Comment(models.Model):
     author = models.ForeignKey(Participant, on_delete=models.CASCADE)
